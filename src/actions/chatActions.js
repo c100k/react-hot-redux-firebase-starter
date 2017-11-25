@@ -34,7 +34,6 @@ export function postMessage(message) {
       dispatch(beginAjaxCall());
       return firebaseApi.databasePush('/chat-messages', {
         message,
-        createdAt: new Date().getTime(),
         authorUID: getState().auth.currentUserUID
       })
         .then(() => dispatch(messagePosted(message)))
