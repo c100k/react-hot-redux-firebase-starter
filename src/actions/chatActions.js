@@ -1,3 +1,4 @@
+import {push} from 'react-router-redux';
 import firebaseApi from '../api/firebase';
 import * as types from './actionTypes';
 import {ajaxCallError, beginAjaxCall} from './ajaxStatusActions';
@@ -41,6 +42,12 @@ export function roomJoined(room) {
   };
 }
 
+export function roomLeft(room) {
+  return {
+    type: types.CHAT_ROOM_LEAVE_SUCCESS
+  };
+}
+
 export function listenToMessages(roomKey) {
   return (dispatch) => {
     dispatch(beginAjaxCall());
@@ -64,6 +71,22 @@ export function joinRoom(room) {
     dispatch(beginAjaxCall());
     return firebaseApi.databaseSet(`/chat-users/${room.key}/${getState().auth.currentUserUID}`, true)
       .then(() => dispatch(roomJoined()))
+      .catch(error => {
+        dispatch(ajaxCallError(error));
+        // @TODO better error handling
+        throw(error);
+      });
+  };
+}
+
+export function leaveRoom(roomKey) {
+  return (dispatch, getState) => {
+    dispatch(beginAjaxCall());
+    /* We set the flag as false to keep a record that the user has already been in the room instead of
+       simply deleting the record */
+    return firebaseApi.databaseSet(`/chat-users/${roomKey}/${getState().auth.currentUserUID}`, false)
+      .then(() => dispatch(roomLeft()))
+      .then(() => dispatch(push('/chat')))
       .catch(error => {
         dispatch(ajaxCallError(error));
         // @TODO better error handling

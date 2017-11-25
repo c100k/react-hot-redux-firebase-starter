@@ -3,7 +3,7 @@ import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
 import toastr from 'toastr';
 
-import {listenToMessages, postMessage} from '../../actions/chatActions';
+import {listenToMessages, postMessage, leaveRoom} from '../../actions/chatActions';
 import ChatMessageForm from './ChatMessageForm';
 
 export class ChatRoomPage extends React.Component {
@@ -21,6 +21,7 @@ export class ChatRoomPage extends React.Component {
 
     this.updateMessage = this.updateMessage.bind(this);
     this.postMessage = this.postMessage.bind(this);
+    this.leaveRoom = this.leaveRoom.bind(this);
 
     this.props.actions.listenToMessages(this.roomKey);
   }
@@ -45,10 +46,22 @@ export class ChatRoomPage extends React.Component {
       });
   }
 
+  leaveRoom() {
+    this.props.actions.leaveRoom(this.roomKey);
+  }
+
   render() {
     return (
       <div className="chat">
         <h1>Chat Room</h1>
+
+        <button
+          className="btn btn-default btn-sm pull-right"
+          onClick={this.leaveRoom}
+        >
+          {'Leave this room'}
+        </button>
+        <div className="clearfix"></div>
 
         {this.props.messages.map(message => (
           <div className="message" key={message.key}>
@@ -94,7 +107,7 @@ function mapStateToProps(state, ownProps) {
 
 function mapDispatchToProps(dispatch) {
   return {
-    actions: bindActionCreators({listenToMessages, postMessage}, dispatch)
+    actions: bindActionCreators({listenToMessages, postMessage, leaveRoom}, dispatch)
   };
 }
 
