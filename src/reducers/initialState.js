@@ -17,7 +17,8 @@ export default {
     initialized: false
   },
   chat: {
-    messages: []
+    messages: [],
+    rooms: [],
   },
   ajaxCallsInProgress: 0
 };

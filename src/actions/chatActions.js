@@ -22,12 +22,34 @@ export function messagePosted(message) {
   };
 }
 
+export function roomListeningStarted() {
+  return {
+    type: types.CHAT_ROOM_LISTENING_STARTED
+  };
+}
+
+export function roomReceived(room) {
+  return {
+    type: types.CHAT_ROOM_RECEIVED_SUCCESS,
+    room
+  };
+}
+
 export function listenToMessages() {
   return (dispatch) => {
     dispatch(beginAjaxCall());
     dispatch(messageListeningStarted());
     const onChildAdded = message => dispatch(messageReceived(message));
     return firebaseApi.GetRealTimeRef('/chat-messages', onChildAdded);
+  };
+}
+
+export function listenToRooms() {
+  return (dispatch) => {
+    dispatch(beginAjaxCall());
+    dispatch(roomListeningStarted());
+    const onChildAdded = room => dispatch(roomReceived(room));
+    return firebaseApi.GetRealTimeRef('/chat-rooms', onChildAdded);
   };
 }
 

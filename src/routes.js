@@ -8,6 +8,7 @@ import AboutPage from './components/about/AboutPage';
 import LoginPage from './components/login/LoginPage'; //eslint-disable-line import/no-named-as-default
 import RegistrationPage from './components/registration/RegistrationPage'; //eslint-disable-line import/no-named-as-default
 import ChatRoomPage from './components/chat/ChatRoomPage'; //eslint-disable-line import/no-named-as-default
+import ChatRoomListPage from './components/chat/ChatRoomListPage'; //eslint-disable-line import/no-named-as-default
 import {requireAdmin} from './actions/authActions';
 
 
@@ -27,7 +28,8 @@ export default function Routes(store) {
       <Route path="admin" component={AdminPage} onEnter={checkAdmin}/>
       <Route path="register" component={RegistrationPage}/>
       <Route path="login" component={LoginPage}/>
-      <Route path="chat" component={ChatRoomPage}/>
+      <Route path="chat" component={ChatRoomListPage}/>
+      <Route path="chat/*" component={ChatRoomPage}/>
     </Route>
   );
 }
