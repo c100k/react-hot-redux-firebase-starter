@@ -4,10 +4,12 @@ import LoadingDots from './LoadingDots';
 import LoginLink from './LoginLink';
 import LogoutLink from './LogoutLink';
 import AdminLink from './AdminLink';
+import ChatLink from './ChatLink';
 
 const Header = ({loading, signOut, auth, user}) => {
 
   let loginLogoutLink = auth.isLogged ? <LogoutLink signOut={signOut} /> : <LoginLink />;
+  let chatLink = auth.isLogged ? <ChatLink /> : null;
   let adminLink = user.isAdmin ? <AdminLink /> : null;
 
   return (
@@ -17,6 +19,7 @@ const Header = ({loading, signOut, auth, user}) => {
       <Link to="/about" activeClassName="active">About</Link>
       {" | "}
       <Link to="/protected" activeClassName="active">Protected</Link>
+      {chatLink}
       {adminLink}
       {" | "}
       {loginLogoutLink}
