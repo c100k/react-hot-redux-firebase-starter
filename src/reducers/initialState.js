@@ -16,5 +16,8 @@ export default {
     currentUserUID: null,
     initialized: false
   },
+  chat: {
+    messages: []
+  },
   ajaxCallsInProgress: 0
 };

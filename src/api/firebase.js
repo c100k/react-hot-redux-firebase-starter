@@ -62,6 +62,16 @@ class FirebaseApi {
       .once('child_added');
   }
 
+  static GetValuesOnce(path, args = {}) {
+    return firebase
+      .database()
+      .ref(path)
+      .orderByKey()
+      .limitToLast(args.limitToLast || 10)
+      .once('value')
+      .then(snapshot => FirebaseApi.mapSnapshotToArray(snapshot));
+  }
+
   static databaseSet(path, value) {
 
     return firebase
@@ -69,6 +79,22 @@ class FirebaseApi {
       .ref(path)
       .set(value);
 
+  }
+
+  /**
+   * Mapping snapshot to array makes the code less dependent to firebase
+   * And it is more natural to go through an array in the UI components
+   * @param {*} snapshot 
+   */
+  static mapSnapshotToArray(snapshot) {
+    const values = [];
+    snapshot.forEach((child) => {
+      values.push({
+        key: child.key,
+        val: child.val()
+      });
+    });
+    return values;
   }
 }
 

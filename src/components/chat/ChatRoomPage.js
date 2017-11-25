@@ -3,7 +3,7 @@ import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
 import toastr from 'toastr';
 
-import {postMessage} from '../../actions/chatActions';
+import {listMessages, postMessage} from '../../actions/chatActions';
 import ChatMessageForm from './ChatMessageForm';
 
 export class ChatRoomPage extends React.Component {
@@ -19,6 +19,10 @@ export class ChatRoomPage extends React.Component {
 
     this.updateMessage = this.updateMessage.bind(this);
     this.postMessage = this.postMessage.bind(this);
+  }
+
+  componentWillMount() {
+    this.props.actions.listMessages();
   }
 
   updateMessage(event) {
@@ -43,8 +47,16 @@ export class ChatRoomPage extends React.Component {
 
   render() {
     return (
-      <div>
+      <div className="chat">
         <h1>Chat Room</h1>
+
+        {this.props.messages.map(message => (
+          <div className="message" key={message.key}>
+            <div className="author">{message.val.authorUID}</div>
+            <div className="message">{message.val.message}</div>
+          </div>
+        ))}
+
         <ChatMessageForm
           message={this.state.message}
           onChange={this.updateMessage}
@@ -57,16 +69,21 @@ export class ChatRoomPage extends React.Component {
 }
 
 ChatRoomPage.propTypes = {
-  actions: PropTypes.object.isRequired
+  actions: PropTypes.object.isRequired,
+  messages: PropTypes.arrayOf(PropTypes.shape({
+    message: PropTypes.string.isRequired
+  })).isRequired
 };
 
 function mapStateToProps(state, ownProps) {
-  return {};
+  return {
+    messages: state.chat.messages
+  };
 }
 
 function mapDispatchToProps(dispatch) {
   return {
-    actions: bindActionCreators({postMessage}, dispatch)
+    actions: bindActionCreators({listMessages, postMessage}, dispatch)
   };
 }
 
