@@ -35,6 +35,12 @@ export function roomReceived(room) {
   };
 }
 
+export function roomJoined(room) {
+  return {
+    type: types.CHAT_ROOM_JOIN_SUCCESS
+  };
+}
+
 export function listenToMessages(roomKey) {
   return (dispatch) => {
     dispatch(beginAjaxCall());
@@ -50,6 +56,19 @@ export function listenToRooms() {
     dispatch(roomListeningStarted());
     const onChildAdded = room => dispatch(roomReceived(room));
     return firebaseApi.GetRealTimeRef('/chat-rooms', onChildAdded);
+  };
+}
+
+export function joinRoom(room) {
+  return (dispatch, getState) => {
+    dispatch(beginAjaxCall());
+    return firebaseApi.databaseSet(`/chat-users/${room.key}/${getState().auth.currentUserUID}`, true)
+      .then(() => dispatch(roomJoined()))
+      .catch(error => {
+        dispatch(ajaxCallError(error));
+        // @TODO better error handling
+        throw(error);
+      });
   };
 }
 

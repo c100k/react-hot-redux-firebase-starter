@@ -3,13 +3,19 @@ import {Link} from 'react-router';
 import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
 
-import {listenToRooms} from '../../actions/chatActions';
+import {listenToRooms, joinRoom} from '../../actions/chatActions';
 
 export class ChatRoomListPage extends React.Component {
   constructor(props) {
     super(props);
 
     this.props.actions.listenToRooms();
+
+    this.select = this.select.bind(this);
+  }
+
+  select(event, room) {
+    this.props.actions.joinRoom(room);
   }
 
   render() {
@@ -19,7 +25,12 @@ export class ChatRoomListPage extends React.Component {
 
         <div className="list-group">
           {this.props.rooms.map(room => (
-            <Link to={`/chat/${room.key}`} className="list-group-item" key={room.key}>
+            <Link
+              to={`/chat/${room.key}`}
+              className="list-group-item"
+              key={room.key}
+              onClick={e => this.select(e, room)} // eslint-disable-line react/jsx-no-bind
+            >
               {room.val.name}
             </Link>
           ))}
@@ -47,7 +58,7 @@ function mapStateToProps(state, ownProps) {
 
 function mapDispatchToProps(dispatch) {
   return {
-    actions: bindActionCreators({listenToRooms}, dispatch)
+    actions: bindActionCreators({listenToRooms, joinRoom}, dispatch)
   };
 }
 
