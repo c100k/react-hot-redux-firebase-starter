@@ -51,7 +51,9 @@ export class ChatRoomPage extends React.Component {
         {this.props.messages.map(message => (
           <div className="message" key={message.key}>
             <div className="author">{message.val.authorUID}</div>
-            <div className="message">{message.val.message}</div>
+            <div className={`${this.props.currentUserUID === message.val.authorUID ? 'current-user-message' : ''} message`}>
+              {message.val.message}
+            </div>
           </div>
         ))}
 
@@ -68,8 +70,11 @@ export class ChatRoomPage extends React.Component {
 
 ChatRoomPage.propTypes = {
   actions: PropTypes.object.isRequired,
+  currentUserUID: PropTypes.string.isRequired,
   messages: PropTypes.arrayOf(PropTypes.shape({
+    key: PropTypes.string.isRequired,
     val: PropTypes.shape({
+      authorUID: PropTypes.string.isRequired,
       message: PropTypes.string.isRequired
     }).isRequired
   })).isRequired
@@ -77,6 +82,7 @@ ChatRoomPage.propTypes = {
 
 function mapStateToProps(state, ownProps) {
   return {
+    currentUserUID: state.auth.currentUserUID,
     messages: state.chat.messages
   };
 }

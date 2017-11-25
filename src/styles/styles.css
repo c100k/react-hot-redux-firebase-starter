@@ -73,3 +73,8 @@ nav {
   padding: 5px;
   width: auto;
 }
+
+.chat .message .current-user-message {
+  background: #4082f7;
+  color: #fff;
+}
