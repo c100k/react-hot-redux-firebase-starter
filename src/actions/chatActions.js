@@ -2,10 +2,16 @@ import firebaseApi from '../api/firebase';
 import * as types from './actionTypes';
 import {ajaxCallError, beginAjaxCall} from './ajaxStatusActions';
 
-export function messagesListed(messages) {
+export function messageListeningStarted() {
   return {
-    type: types.CHAT_MESSAGE_LIST_SUCCESS,
-    messages
+    type: types.CHAT_MESSAGE_LISTENING_STARTED
+  };
+}
+
+export function messageReceived(message) {
+  return {
+    type: types.CHAT_MESSAGE_RECEIVED_SUCCESS,
+    message
   };
 }
 
@@ -16,16 +22,12 @@ export function messagePosted(message) {
   };
 }
 
-export function listMessages() {
+export function listenToMessages() {
   return (dispatch) => {
     dispatch(beginAjaxCall());
-    return firebaseApi.GetValuesOnce('/chat-messages', { limitToLast: 10 })
-      .then(messages => dispatch(messagesListed(messages)))
-      .catch(error => {
-        dispatch(ajaxCallError(error));
-        // @TODO better error handling
-        throw(error);
-      });
+    dispatch(messageListeningStarted());
+    const onChildAdded = message => dispatch(messageReceived(message));
+    return firebaseApi.GetRealTimeRef('/chat-messages', onChildAdded);
   };
 }
 

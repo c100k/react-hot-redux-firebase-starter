@@ -3,7 +3,7 @@ import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
 import toastr from 'toastr';
 
-import {listMessages, postMessage} from '../../actions/chatActions';
+import {listenToMessages, postMessage} from '../../actions/chatActions';
 import ChatMessageForm from './ChatMessageForm';
 
 export class ChatRoomPage extends React.Component {
@@ -19,10 +19,8 @@ export class ChatRoomPage extends React.Component {
 
     this.updateMessage = this.updateMessage.bind(this);
     this.postMessage = this.postMessage.bind(this);
-  }
 
-  componentWillMount() {
-    this.props.actions.listMessages();
+    this.props.actions.listenToMessages();
   }
 
   updateMessage(event) {
@@ -71,7 +69,9 @@ export class ChatRoomPage extends React.Component {
 ChatRoomPage.propTypes = {
   actions: PropTypes.object.isRequired,
   messages: PropTypes.arrayOf(PropTypes.shape({
-    message: PropTypes.string.isRequired
+    val: PropTypes.shape({
+      message: PropTypes.string.isRequired
+    }).isRequired
   })).isRequired
 };
 
@@ -83,7 +83,7 @@ function mapStateToProps(state, ownProps) {
 
 function mapDispatchToProps(dispatch) {
   return {
-    actions: bindActionCreators({listMessages, postMessage}, dispatch)
+    actions: bindActionCreators({listenToMessages, postMessage}, dispatch)
   };
 }
 

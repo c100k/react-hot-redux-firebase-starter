@@ -62,14 +62,19 @@ class FirebaseApi {
       .once('child_added');
   }
 
-  static GetValuesOnce(path, args = {}) {
-    return firebase
+  static GetRealTimeRef(path, onChildAdded, args = {}) {
+    const ref = firebase
       .database()
-      .ref(path)
-      .orderByKey()
+      .ref(path);
+
+    // Avoid having multiple listeners leading to duplicate triggers : https://stackoverflow.com/a/40652682/1259118
+    ref.off();
+
+    ref
       .limitToLast(args.limitToLast || 10)
-      .once('value')
-      .then(snapshot => FirebaseApi.mapSnapshotToArray(snapshot));
+      .on('child_added', data => {
+        onChildAdded(FirebaseApi.mapRecord(data));
+      });
   }
 
   static databaseSet(path, value) {
@@ -81,20 +86,11 @@ class FirebaseApi {
 
   }
 
-  /**
-   * Mapping snapshot to array makes the code less dependent to firebase
-   * And it is more natural to go through an array in the UI components
-   * @param {*} snapshot 
-   */
-  static mapSnapshotToArray(snapshot) {
-    const values = [];
-    snapshot.forEach((child) => {
-      values.push({
-        key: child.key,
-        val: child.val()
-      });
-    });
-    return values;
+  static mapRecord(record) {
+    return {
+      key: record.key,
+      val: record.val()
+    };
   }
 }
 
