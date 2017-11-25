@@ -29,7 +29,7 @@ export default function Routes(store) {
       <Route path="register" component={RegistrationPage}/>
       <Route path="login" component={LoginPage}/>
       <Route path="chat" component={ChatRoomListPage}/>
-      <Route path="chat/*" component={ChatRoomPage}/>
+      <Route path="chat/:roomKey" component={ChatRoomPage}/>
     </Route>
   );
 }

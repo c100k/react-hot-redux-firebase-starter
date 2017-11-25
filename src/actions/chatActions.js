@@ -35,12 +35,12 @@ export function roomReceived(room) {
   };
 }
 
-export function listenToMessages() {
+export function listenToMessages(roomKey) {
   return (dispatch) => {
     dispatch(beginAjaxCall());
     dispatch(messageListeningStarted());
     const onChildAdded = message => dispatch(messageReceived(message));
-    return firebaseApi.GetRealTimeRef('/chat-messages', onChildAdded);
+    return firebaseApi.GetRealTimeRef(`/chat-messages/${roomKey}`, onChildAdded);
   };
 }
 
@@ -53,10 +53,10 @@ export function listenToRooms() {
   };
 }
 
-export function postMessage(message) {
+export function postMessage(roomKey, message) {
   return (dispatch, getState) => {
       dispatch(beginAjaxCall());
-      return firebaseApi.databasePush('/chat-messages', {
+      return firebaseApi.databasePush(`/chat-messages/${roomKey}`, {
         message,
         authorUID: getState().auth.currentUserUID
       })

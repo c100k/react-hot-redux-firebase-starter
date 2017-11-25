@@ -10,6 +10,8 @@ export class ChatRoomPage extends React.Component {
   constructor(props) {
     super(props);
 
+    this.roomKey = this.props.params.roomKey;
+
     this.initialState = {
       message: '',
       saving: false
@@ -20,7 +22,7 @@ export class ChatRoomPage extends React.Component {
     this.updateMessage = this.updateMessage.bind(this);
     this.postMessage = this.postMessage.bind(this);
 
-    this.props.actions.listenToMessages();
+    this.props.actions.listenToMessages(this.roomKey);
   }
 
   updateMessage(event) {
@@ -32,7 +34,7 @@ export class ChatRoomPage extends React.Component {
 
     this.setState({saving: true});
 
-    this.props.actions.postMessage(this.state.message)
+    this.props.actions.postMessage(this.roomKey, this.state.message)
       .then(() => toastr.success('Message posted successfully'))
       .then(() => {
         this.setState(Object.assign({}, this.initialState));
@@ -77,7 +79,10 @@ ChatRoomPage.propTypes = {
       authorUID: PropTypes.string.isRequired,
       message: PropTypes.string.isRequired
     }).isRequired
-  })).isRequired
+  })).isRequired,
+  params: PropTypes.shape({
+    roomKey: PropTypes.string.isRequired
+  }).isRequired
 };
 
 function mapStateToProps(state, ownProps) {
