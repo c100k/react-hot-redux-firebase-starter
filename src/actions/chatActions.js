@@ -73,7 +73,7 @@ export function listenToMessages(roomKey) {
     dispatch(beginAjaxCall());
     dispatch(messageListeningStarted());
     const onChildAdded = message => dispatch(messageReceived(message));
-    return firebaseApi.GetRealTimeRef(`/chat-messages/${roomKey}`, onChildAdded, null, { limitToLast: 10 });
+    return firebaseApi.GetRealTimeRef(`/chafik-chat/messages/${roomKey}`, onChildAdded, null, { limitToLast: 10 });
   };
 }
 
@@ -82,7 +82,7 @@ export function listenToRooms() {
     dispatch(beginAjaxCall());
     dispatch(roomListeningStarted());
     const onChildAdded = room => dispatch(roomReceived(room));
-    return firebaseApi.GetRealTimeRef('/chat-rooms', onChildAdded);
+    return firebaseApi.GetRealTimeRef('/chafik-chat/rooms', onChildAdded);
   };
 }
 
@@ -93,14 +93,14 @@ export function listenToUsers(roomKey) {
     const onChildEvent = (user) => {
       dispatch(userReceived(user));
     };
-    return firebaseApi.GetRealTimeRef(`/chat-users/${roomKey}`, onChildEvent, onChildEvent);
+    return firebaseApi.GetRealTimeRef(`/chafik-chat/users/${roomKey}`, onChildEvent, onChildEvent);
   };
 }
 
 export function createRoom(name) {
   return (dispatch, getState) => {
     dispatch(beginAjaxCall());
-    return firebaseApi.databasePush(`/chat-rooms`, {
+    return firebaseApi.databasePush(`/chafik-chat/rooms`, {
       name,
       authorUID: getState().auth.currentUserUID
     })
@@ -116,7 +116,7 @@ export function createRoom(name) {
 export function joinRoom(room) {
   return (dispatch, getState) => {
     dispatch(beginAjaxCall());
-    return firebaseApi.databaseSet(`/chat-users/${room.key}/${getState().auth.currentUserUID}`, true)
+    return firebaseApi.databaseSet(`/chafik-chat/users/${room.key}/${getState().auth.currentUserUID}`, true)
       .then(() => dispatch(roomJoined()))
       .catch(error => {
         dispatch(ajaxCallError(error));
@@ -131,7 +131,7 @@ export function leaveRoom(roomKey) {
     dispatch(beginAjaxCall());
     /* We set the flag as false to keep a record that the user has already been in the room instead of
        simply deleting the record */
-    return firebaseApi.databaseSet(`/chat-users/${roomKey}/${getState().auth.currentUserUID}`, false)
+    return firebaseApi.databaseSet(`/chafik-chat/users/${roomKey}/${getState().auth.currentUserUID}`, false)
       .then(() => dispatch(roomLeft()))
       .then(() => dispatch(push('/chat')))
       .catch(error => {

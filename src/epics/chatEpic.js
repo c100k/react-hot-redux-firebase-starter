@@ -13,7 +13,7 @@ function messagePosted(message) {
 const chatEpic = (action$, store) => {
   return action$.ofType(types.CHAT_MESSAGE_POST_STARTED)
     .mergeMap(action =>
-      firebaseApi.databasePush(`/chat-messages/${action.roomKey}`, {
+      firebaseApi.databasePush(`/chafik-chat/messages/${action.roomKey}`, {
         message : action.message,
         authorUID: store.getState().auth.currentUserUID
       })
