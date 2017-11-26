@@ -5,6 +5,8 @@ import toastr from 'toastr';
 
 import {listenToMessages, listenToUsers, postMessage, leaveRoom} from '../../actions/chatActions';
 import ChatMessageForm from './ChatMessageForm';
+import ChatRoomUsersWidget from './ChatRoomUsersWidget';
+import ChatRoomMessagesWidget from './ChatRoomMessagesWidget';
 
 export class ChatRoomPage extends React.Component {
   constructor(props) {
@@ -64,21 +66,8 @@ export class ChatRoomPage extends React.Component {
         </button>
         <div className="clearfix"></div>
 
-        {this.props.users.map(user => (
-          <div className="user" key={user.key}>
-            <i className="glyphicon glyphicon-user" /><br/>
-            {user.key}
-          </div>
-        ))}
-
-        {this.props.messages.map(message => (
-          <div className="message" key={message.key}>
-            <div className="author">{message.val.authorUID}</div>
-            <div className={`${this.props.currentUserUID === message.val.authorUID ? 'current-user-message' : ''} message`}>
-              {message.val.message}
-            </div>
-          </div>
-        ))}
+        <ChatRoomUsersWidget />
+        <ChatRoomMessagesWidget />
 
         <ChatMessageForm
           message={this.state.message}
@@ -93,28 +82,13 @@ export class ChatRoomPage extends React.Component {
 
 ChatRoomPage.propTypes = {
   actions: PropTypes.object.isRequired,
-  currentUserUID: PropTypes.string.isRequired,
-  messages: PropTypes.arrayOf(PropTypes.shape({
-    key: PropTypes.string.isRequired,
-    val: PropTypes.shape({
-      authorUID: PropTypes.string.isRequired,
-      message: PropTypes.string.isRequired
-    }).isRequired
-  })).isRequired,
   params: PropTypes.shape({
     roomKey: PropTypes.string.isRequired
-  }).isRequired,
-  users: PropTypes.arrayOf(PropTypes.shape({
-    key: PropTypes.string.isRequired
-  })).isRequired
+  }).isRequired
 };
 
 function mapStateToProps(state, ownProps) {
-  return {
-    currentUserUID: state.auth.currentUserUID,
-    messages: state.chat.messages,
-    users: state.chat.users
-  };
+  return {};
 }
 
 function mapDispatchToProps(dispatch) {
