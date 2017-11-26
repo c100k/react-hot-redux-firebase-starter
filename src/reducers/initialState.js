@@ -16,5 +16,13 @@ export default {
     currentUserUID: null,
     initialized: false
   },
+  chat: {
+    message: '',
+    postingMessage: false,
+    messages: [],
+    rooms: [],
+    users: [],
+    successNotification: null
+  },
   ajaxCallsInProgress: 0
 };
