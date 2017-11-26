@@ -48,12 +48,25 @@ export function roomLeft(room) {
   };
 }
 
+export function userListeningStarted() {
+  return {
+    type: types.CHAT_USER_LISTENING_STARTED
+  };
+}
+
+export function userReceived(user) {
+  return {
+    type: types.CHAT_USER_RECEIVED_SUCCESS,
+    user
+  };
+}
+
 export function listenToMessages(roomKey) {
   return (dispatch) => {
     dispatch(beginAjaxCall());
     dispatch(messageListeningStarted());
     const onChildAdded = message => dispatch(messageReceived(message));
-    return firebaseApi.GetRealTimeRef(`/chat-messages/${roomKey}`, onChildAdded);
+    return firebaseApi.GetRealTimeRef(`/chat-messages/${roomKey}`, onChildAdded, null, { limitToLast: 10 });
   };
 }
 
@@ -63,6 +76,17 @@ export function listenToRooms() {
     dispatch(roomListeningStarted());
     const onChildAdded = room => dispatch(roomReceived(room));
     return firebaseApi.GetRealTimeRef('/chat-rooms', onChildAdded);
+  };
+}
+
+export function listenToUsers(roomKey) {
+  return (dispatch) => {
+    dispatch(beginAjaxCall());
+    dispatch(userListeningStarted());
+    const onChildEvent = (user) => {
+      dispatch(userReceived(user));
+    };
+    return firebaseApi.GetRealTimeRef(`/chat-users/${roomKey}`, onChildEvent, onChildEvent);
   };
 }
 

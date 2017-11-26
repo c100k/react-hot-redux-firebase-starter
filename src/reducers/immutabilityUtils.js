@@ -8,3 +8,7 @@ export function insertItem(array, item) {
   newArray.push(item);
   return newArray;
 }
+
+export function removeItem(array, predicate) {
+  return array.filter(predicate);
+}

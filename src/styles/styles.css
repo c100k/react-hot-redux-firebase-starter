@@ -78,3 +78,13 @@ nav {
   background: #4082f7;
   color: #fff;
 }
+
+.chat .user {
+  background: #2ff8ff;
+  border-radius: 5px;
+  color: #fff;
+  display: inline-block;
+  margin: 0 3px;
+  padding: 3px;
+  text-align: center;
+}

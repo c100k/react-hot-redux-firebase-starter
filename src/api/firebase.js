@@ -62,19 +62,27 @@ class FirebaseApi {
       .once('child_added');
   }
 
-  static GetRealTimeRef(path, onChildAdded, args = {}) {
+  static GetRealTimeRef(path, onChildAdded, onChildChanged, args = {}) {
     const ref = firebase
       .database()
       .ref(path);
-
+    
     // Avoid having multiple listeners leading to duplicate triggers : https://stackoverflow.com/a/40652682/1259118
     ref.off();
 
-    ref
-      .limitToLast(args.limitToLast || 10)
-      .on('child_added', data => {
-        onChildAdded(FirebaseApi.mapRecord(data));
+    if (args.limitToLast) {
+      ref.limitToLast(args.limitToLast);
+    }
+
+    ref.on('child_added', (data) => {
+      onChildAdded(FirebaseApi.mapRecord(data));
+    });
+
+    if (onChildChanged) {
+      ref.on('child_changed', (data) => {
+        onChildChanged(FirebaseApi.mapRecord(data));
       });
+    }
   }
 
   static databaseSet(path, value) {

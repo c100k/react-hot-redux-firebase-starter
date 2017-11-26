@@ -3,7 +3,7 @@ import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
 import toastr from 'toastr';
 
-import {listenToMessages, postMessage, leaveRoom} from '../../actions/chatActions';
+import {listenToMessages, listenToUsers, postMessage, leaveRoom} from '../../actions/chatActions';
 import ChatMessageForm from './ChatMessageForm';
 
 export class ChatRoomPage extends React.Component {
@@ -24,6 +24,7 @@ export class ChatRoomPage extends React.Component {
     this.leaveRoom = this.leaveRoom.bind(this);
 
     this.props.actions.listenToMessages(this.roomKey);
+    this.props.actions.listenToUsers(this.roomKey);
   }
 
   updateMessage(event) {
@@ -63,6 +64,13 @@ export class ChatRoomPage extends React.Component {
         </button>
         <div className="clearfix"></div>
 
+        {this.props.users.map(user => (
+          <div className="user" key={user.key}>
+            <i className="glyphicon glyphicon-user" /><br/>
+            {user.key}
+          </div>
+        ))}
+
         {this.props.messages.map(message => (
           <div className="message" key={message.key}>
             <div className="author">{message.val.authorUID}</div>
@@ -95,19 +103,23 @@ ChatRoomPage.propTypes = {
   })).isRequired,
   params: PropTypes.shape({
     roomKey: PropTypes.string.isRequired
-  }).isRequired
+  }).isRequired,
+  users: PropTypes.arrayOf(PropTypes.shape({
+    key: PropTypes.string.isRequired
+  })).isRequired
 };
 
 function mapStateToProps(state, ownProps) {
   return {
     currentUserUID: state.auth.currentUserUID,
-    messages: state.chat.messages
+    messages: state.chat.messages,
+    users: state.chat.users
   };
 }
 
 function mapDispatchToProps(dispatch) {
   return {
-    actions: bindActionCreators({listenToMessages, postMessage, leaveRoom}, dispatch)
+    actions: bindActionCreators({listenToMessages, listenToUsers, postMessage, leaveRoom}, dispatch)
   };
 }
 

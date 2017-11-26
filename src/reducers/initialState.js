@@ -19,6 +19,7 @@ export default {
   chat: {
     messages: [],
     rooms: [],
+    users: []
   },
   ajaxCallsInProgress: 0
 };
