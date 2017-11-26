@@ -22,7 +22,7 @@ export default {
     messages: [],
     rooms: [],
     users: [],
-    successNotification: null,
+    successNotification: null
   },
   ajaxCallsInProgress: 0
 };

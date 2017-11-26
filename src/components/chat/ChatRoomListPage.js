@@ -12,7 +12,7 @@ export class ChatRoomListPage extends React.Component {
 
     this.state = {
       name: '',
-      saving: false,
+      saving: false
     };
 
     this.props.actions.listenToRooms();

@@ -18,6 +18,6 @@ const chatEpic = (action$, store) => {
         authorUID: store.getState().auth.currentUserUID
       })
         .then(() => messagePosted(action.message)));
-}
+};
 
 export default chatEpic;
