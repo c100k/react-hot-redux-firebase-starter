@@ -23,6 +23,12 @@ export function messagePosted(message) {
   };
 }
 
+export function roomCreated() {
+  return {
+    type: types.CHAT_ROOM_POST_SUCCESS
+  };
+}
+
 export function roomListeningStarted() {
   return {
     type: types.CHAT_ROOM_LISTENING_STARTED
@@ -88,6 +94,22 @@ export function listenToUsers(roomKey) {
     };
     return firebaseApi.GetRealTimeRef(`/chat-users/${roomKey}`, onChildEvent, onChildEvent);
   };
+}
+
+export function createRoom(name) {
+  return (dispatch, getState) => {
+    dispatch(beginAjaxCall());
+    return firebaseApi.databasePush(`/chat-rooms`, {
+      name,
+      authorUID: getState().auth.currentUserUID
+    })
+      .then(() => dispatch(roomCreated()))
+      .catch(error => {
+        dispatch(ajaxCallError(error));
+        // @TODO better error handling
+        throw(error);
+      });
+};
 }
 
 export function joinRoom(room) {
