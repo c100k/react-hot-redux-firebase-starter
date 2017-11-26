@@ -16,9 +16,10 @@ export function messageReceived(message) {
   };
 }
 
-export function messagePosted(message) {
+export function messagePostStarted(roomKey, message) {
   return {
-    type: types.CHAT_MESSAGE_POST_SUCCESS,
+    type: types.CHAT_MESSAGE_POST_STARTED,
+    roomKey,
     message
   };
 }
@@ -141,18 +142,16 @@ export function leaveRoom(roomKey) {
   };
 }
 
+export function typeMessage(message) {
+  return {
+    type: types.CHAT_MESSAGE_TYPE,
+    message
+  };
+}
+
 export function postMessage(roomKey, message) {
-  return (dispatch, getState) => {
-      dispatch(beginAjaxCall());
-      return firebaseApi.databasePush(`/chat-messages/${roomKey}`, {
-        message,
-        authorUID: getState().auth.currentUserUID
-      })
-        .then(() => dispatch(messagePosted(message)))
-        .catch(error => {
-          dispatch(ajaxCallError(error));
-          // @TODO better error handling
-          throw(error);
-        });
+  return (dispatch) => {
+    dispatch(beginAjaxCall());
+    dispatch(messagePostStarted(roomKey, message));
   };
 }

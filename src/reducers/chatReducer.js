@@ -4,6 +4,21 @@ import {insertItem, removeItem} from './immutabilityUtils';
 
 export default function chatReducer(state = initialState.chat, action) {
   switch (action.type) {
+    case types.CHAT_MESSAGE_TYPE:
+      return Object.assign({}, state, {
+        message: action.message,
+        successNotification: null
+      });
+    case types.CHAT_MESSAGE_POST_STARTED:
+      return Object.assign({}, state, {
+        postingMessage: true
+      });
+    case types.CHAT_MESSAGE_POST_SUCCESS:
+      return Object.assign({}, state, {
+        message: initialState.chat.message,
+        postingMessage: initialState.chat.postingMessage,
+        successNotification: 'Message posted successfully'
+      });
     case types.CHAT_MESSAGE_LISTENING_STARTED:
       return Object.assign({}, state, {messages: []});
     case types.CHAT_MESSAGE_RECEIVED_SUCCESS:
